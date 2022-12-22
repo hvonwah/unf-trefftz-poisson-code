@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7474688.svg)](https://doi.org/10.5281/zenodo.7474688)
+
 # Reproduction Code
 
 This repository contains the scripts to reproduce the numerical examples presented in the paper *Unfitted Trefftz discontinuous Galerkin methods for elliptic boundary value problems* by F. Heimann, C. Lehrenfeld, P. Stocker, and H. von Wahl.
