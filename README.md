@@ -19,10 +19,11 @@ To use the pip installer, please ensure that an appropriate pre-release versions
 | filename | description | 
 |-|-|
 | [`ficdom_dgT.py`](ficdom_dgT.py) | The python script to compute the unfitted Poisson problem using the unfitted DG/Trefftz methods, with or without geometry approximation and global or patch-wise ghost-penalties. |
-| [`conv_study.py`](unf_interf_prob.py) | Python script to run a method for a given order over a series of meshes. |
+| [`conv_study.py`](conv_study.py) | Python script to run a method for a given order over a series of meshes. |
 | [`run_conv2d.sh`](run_conv2d.sh) | Shell script to run the two dimensional convergence studies. |
 | [`run_conv3d.sh`](run_conv3d.sh) | Shell script to run the three dimensional convergence studies. |
 | [`timings.py`](timings.py) | Python script to time the different methods. |
 | [`run_timings.sh`](run_timings.sh) | Shell script to run the two and three dimensional timings. |
 | `out/` | Directory containing the results realised with the given implementation. |
+| [`ficdom_conv_diff_dgT.py`](ficdom_conv_diff_dgT.py) | Python script to compute the convection-diffusion problem with unfitted Trefftz/DG method. |
 
