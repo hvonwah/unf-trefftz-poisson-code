@@ -50,7 +50,11 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     '''
 
     if method not in ['l2', 'emb_trefftz', 'trefftz', 'trefftz_mixed']:
-        raise Exception('Unknown method passed to SolveFdT')
+        raise Exception(f'Unknown method={method} passed to SolveFdT')
+    if stabil not in ['global', 'patch', 'aggregation', 'none']:
+        Exception(f'Unknown stabil={stabil} passed to SolveFdT')
+    if method in ['emb_trefftz', 'trefftz_mixed'] and stabil == 'aggregation':
+        raise Exception(f'The compination of method={method} and stabil={stabil} is not implemented')
 
     # Stabilization parameter for ghost-penalty
     gamma_stab = 0.01
@@ -136,12 +140,11 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     # Facets with parts inside the domain
     facets_dg = GetFacetsWithNeighborTypes(mesh, a=els_hasneg, b=els_hasneg)
     # Facets for ghost penalty stabilization
-    if stabil == 'patch':
+    if stabil in ['patch', 'aggregation']:
         els_neg = ci.GetElementsOfType(NEG)
-        EA = ElementAggregation(mesh)
-        EA.Update(els_neg, els_if)
-        facets_gp = EA.GetInnerPatchFacets()
-    else:  # if stabil == 'global':
+        EA = ElementAggregation(mesh, els_neg, els_if)
+        facets_gp = EA.patch_interior_facets
+    elif stabil == 'global':
         facets_gp = GetFacetsWithNeighborTypes(mesh, a=els_hasneg, b=els_if)
 
     # ------------------------- FINITE ELEMENT SPACE --------------------------
@@ -202,7 +205,7 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     a += (grad(u) * grad(v)).Compile() * dx
     a += (lambda_dg / h * jump_u * jump_v + flux_u * jump_v + flux_v * jump_u).Compile() * dk
     a += (-grad(u) * nh * v - grad(v) * nh * u + lambda_nitsche / h * u * v).Compile() * ds
-    if stabil in ['patch','global']:
+    if stabil in ['patch', 'global']:
         a += (gamma_stab / h**2 * (u - u.Other()) * (v - v.Other())).Compile() * dw
     if method == 'trefftz_mixed':
         a += (-Lap(u) * q - Lap(v) * p).Compile() * dX
@@ -223,7 +226,6 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     times['assemble'] = time.perf_counter() - tic
 
     ncutels = sum(els_hasneg)
-    print(f'n cut els: {ncutels}')
 
     if method == 'emb_trefftz':
         tic = time.perf_counter()
@@ -252,17 +254,31 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
 
         nd = Vh_1.ndof - Vh_om2.ndof
     elif method in ['l2', 'trefftz']:
-        nd = Vh.ndof
-        tic = time.perf_counter()
-        gfu.vec.data = a.mat.Inverse(Vh.FreeDofs(), 'sparsecholesky') * f.vec
-        times['solve'] = time.perf_counter() - tic
-        times['embedding'] = 0.0
+        
+        if stabil == 'aggregation':
+            P = AggEmbedding(EA, Vh, deformation=deformation)
+            nd = P.shape[1]
+            ncutels = sum(els_neg)
+            PT = P.CreateTranspose()
+            Aemb = PT @ a.mat @ P
+
+            tic = time.perf_counter()
+            gfuE = Aemb.Inverse(inverse='sparsecholesky') * (PT * f.vec)
+            gfu.vec.data = P * gfuE
+            times['embedding'] = 0.0
+        else:
+            nd = Vh.ndof
+            tic = time.perf_counter()
+            gfu.vec.data = a.mat.Inverse(Vh.FreeDofs(), 'sparsecholesky') * f.vec
+            times['solve'] = time.perf_counter() - tic
+            times['embedding'] = 0.0
 
     # ----------------------------- COMPUTE ERROR -----------------------------
     l2error = sqrt(Integrate((gfu - exact)**2 * dx, mesh))
+    print(f'n cut els: {ncutels}')
     print(f'Method {method} + {stabil}, L2 Error: {l2error} ndof/el: {nd / ncutels}')
     # import netgen.gui
-    # Draw(exact,mesh,'sol', min=0, max=0.25)
+    # Draw(exact, mesh, 'sol', min=0, max=0.25)
     # DrawDC(levelset, -1.0, 2.0, mesh, 'x')
     # DrawDC(levelset, gfu, 0, mesh, 'u', min=0, max=0.25)
     # DrawDC(levelset, exact, 0, mesh, 'exact', min=0, max=0.25)

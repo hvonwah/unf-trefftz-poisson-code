@@ -8,15 +8,16 @@ from ngstrefftz import *
 import argparse
 
 ngsglobals.msg_level = 2
-SetNumThreads(4)
+SetNumThreads(6)
 
-parser = argparse.ArgumentParser(description='Solve unfitted/ficticious domain convection-diffusion problem with Nitsche to impose dirchelt boundary value imposition and usimg eithe the DG or embedded Trefftz DG method.')
-parser.add_argument('-m', '--method', default='emb_trefftz', help='Method used: options: emb_trefftz, l2, default: emb_trefftz')
-parser.add_argument('-o', '--order', type=int, default=4, help='order of discretisation & mesh deformation, default: 4')
-parser.add_argument('-nr', '--n_ref', type=int, default=2, help='number of refinements, default: 2')
-parser.add_argument('-qm', '--quad_mesh', type=int, default=0, help='Use a quad mesh, enter either int 0 for false or int 1 for true. default: 0')
-parser.add_argument('-sm', '--struc_mesh', type=int, default=0, help='Use structured mesh, enter either int 0 for false or int 1 for true. default: 0')
-parser.add_argument('-def', '--deformation', type=int, default=1, help='Use ioparametric mapping for higher-order geometry approximation. default: 1')
+parser = argparse.ArgumentParser(description='Solve unfitted/ficticious domain convection-diffusion problem with Nitsche to impose dirchelt boundary value imposition and usimg eithe the DG or embedded Trefftz DG method.',
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('-m', '--method', default='emb_trefftz', help='Method used. Options: emb_trefftz, l2.')
+parser.add_argument('-o', '--order', type=int, default=4, help='order of discretisation & mesh deformation.')
+parser.add_argument('-nr', '--n_ref', type=int, default=2, help='number of refinements.')
+parser.add_argument('-qm', '--quad_mesh', type=int, default=0, help='Use a quad mesh, enter either int 0 for false or int 1 for true.')
+parser.add_argument('-sm', '--struc_mesh', type=int, default=0, help='Use structured mesh, enter either int 0 for false or int 1 for true.')
+parser.add_argument('-def', '--deformation', type=int, default=1, help='Use ioparametric mapping for higher-order geometry approximation.')
 
 args = parser.parse_args()
 options = vars(args)

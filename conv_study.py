@@ -4,18 +4,19 @@ from math import log
 
 import argparse
 
-SetNumThreads(8)
+SetNumThreads(6)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Solve unfitted/ficticious domain Poisson problem with Nitsche boundary value imposition and Trefftz.')
-    parser.add_argument('-ex', '--example', type=int, default=1, help='Example to run, deafult=1')
-    parser.add_argument('-m', '--method', default="trefftz", help='Method used: options trefftz, emb_trefftz, trefftz_mixed, l2, default: trefftz')
-    parser.add_argument('-s', '--stabil', default="global", help='Patchwise or global ghost-penalties: options patch, default: global')
-    parser.add_argument('-o', '--order', type=int, default=3, help='order of discretisation & mesh deformation, default: 3')
-    parser.add_argument('-nr', '--n_ref', type=int, default=5, help='number of refinements, default: 5')
-    parser.add_argument('-qm', '--quad_mesh', type=int, default=0, help='Use a quad mesh, enter either int 0 for false or int 1 for true. default: 0')
-    parser.add_argument('-sm', '--struc_mesh', type=int, default=0, help='Use structured mesh, enter either int 0 for false or int 1 for true. default: 0')
-    parser.add_argument('-def', '--deformation', type=int, default=1, help='Use ioparametric mapping for higher-order geometry approximation. default: 1')
+    parser = argparse.ArgumentParser(description='Solve unfitted/ficticious domain Poisson problem with Nitsche boundary value imposition and Trefftz.',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-ex', '--example', type=int, default=1, help='Example to run.')
+    parser.add_argument('-m', '--method', default="trefftz", help='Method used. Options: trefftz, emb_trefftz, trefftz_mixed, l2.')
+    parser.add_argument('-s', '--stabil', default="global", help='Patchwise or global ghost-penalties. Options: global, patch, aggregation.')
+    parser.add_argument('-o', '--order', type=int, default=3, help='order of discretisation & mesh deformation.')
+    parser.add_argument('-nr', '--n_ref', type=int, default=5, help='number of refinements.')
+    parser.add_argument('-qm', '--quad_mesh', type=int, default=0, help='Use a quad mesh, enter either int 0 for false or int 1 for true.')
+    parser.add_argument('-sm', '--struc_mesh', type=int, default=0, help='Use structured mesh, enter either int 0 for false or int 1 for true.')
+    parser.add_argument('-def', '--deformation', type=int, default=1, help='Use ioparametric mapping for higher-order geometry approximation.')
 
     args = parser.parse_args()
     options = vars(args)
