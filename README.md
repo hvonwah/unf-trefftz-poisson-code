@@ -10,7 +10,7 @@ To run the python scripts locally, a compatible combination of `Netgen/NGSolve`,
 | Package | git commit
 |-|-|
 | NGSolve | `42eddb00be6046078244b67a5a54c2bd3e598ad4`
-| ngsxfem | `649ab63eadf77dbe0ceca3b4472b2987df39f9ae`
+| ngsxfem | `e3bcd370502ed24d8fc39a57cdbb1895276f6723`
 | NGSTrefftz | `98289abd821ce1cd9a283bdb37cd0e3b652520d1`
 
 To use the pip installer, please ensure that an appropriate pre-release versions of each package is installed.

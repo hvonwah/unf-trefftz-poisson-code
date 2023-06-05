@@ -131,6 +131,7 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     else:
         InterpolateToP1(levelset, lsetmeshadap.lset_p1,
                         eps_perturbation=lsetmeshadap.eps_perturbation)
+        deformation = None
     lsetp1 = lsetmeshadap.lset_p1
 
     # ----------------------- ELEMENT AND FACET MARKERS -----------------------
@@ -256,7 +257,7 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     elif method in ['l2', 'trefftz']:
         
         if stabil == 'aggregation':
-            P = AggEmbedding(EA, Vh, deformation=deformation)
+            P = AggEmbedding(EA, Vh, deformation=deformation, heapsize=int(1e8))
             nd = P.shape[1]
             ncutels = sum(els_neg)
             PT = P.CreateTranspose()

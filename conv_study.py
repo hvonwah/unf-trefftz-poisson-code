@@ -32,8 +32,8 @@ def conv_study(options):
         with TaskManager():
             l2err, nd, times = SolveFdT(
                 example=options['example'], method=options['method'],
-                maxh=0.5**(i + 1), order=options['order'],
-                quad_mesh=bool(options['quad_mesh']),
+                stabil=options['stabil'], maxh=0.5**(i + 1),
+                order=options['order'], quad_mesh=bool(options['quad_mesh']),
                 struc_mesh=bool(options['struc_mesh']),
                 deformation=bool(options['deformation']))
         f = open(outfile_name, 'a')
