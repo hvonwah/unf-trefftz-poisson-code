@@ -200,7 +200,7 @@ def SolveFdT(example=1, method='emb_trefftz', stabil='global', maxh=0.5, order=3
     def Lap(u):
         return sum(Trace(u.Operator('hesse')))
 
-    a = RestrictedBilinearForm(Vh, element_restrcition=els_hasneg,
+    a = RestrictedBilinearForm(Vh, element_restriction=els_hasneg,
                                facet_restriction=facets_dg,
                                check_unused=False)
     a += (grad(u) * grad(v)).Compile() * dx
